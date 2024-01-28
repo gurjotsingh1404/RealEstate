@@ -18,7 +18,6 @@ const PropertyDetails = ({
     rentFrequency,
     rooms,
     title,
-    baths,
     area,
     agency,
     isVerified,
