@@ -24,6 +24,7 @@ const PropertyDetails = ({
     description,
     type,
     purpose,
+    baths,
     furnishingStatus,
     amenities,
     photos,

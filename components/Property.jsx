@@ -25,6 +25,7 @@ const Property = ({
     rentFrequency,
     rooms,
     title,
+    baths,
     area,
     agency,
     isVerified,
