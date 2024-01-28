@@ -6,6 +6,12 @@ import millify from "millify";
 import { baseUrl, fetchApi } from "../../utils/fetchApi";
 import ImageScrollbar from "../../components/ImageScrollbar";
 
+const truncateText = (text, maxWords) => {
+  const words = text.split(" ");
+  const truncatedText = words.slice(0, maxWords).join(" ");
+  return truncatedText;
+};
+
 const PropertyDetails = ({
   propertyDetails: {
     price,
@@ -23,65 +29,53 @@ const PropertyDetails = ({
     amenities,
     photos,
   },
-}) => (
-  <Box maxWidth="1000px" margin="auto" p="4">
-    {photos && <ImageScrollbar data={photos} />}
-    <Box w="full" p="6">
-      <Flex paddingTop="2" alignItems="center" justifyContent="space-between">
-        <Flex alignItems="left">
-          <Box paddingRight={3} color="black.400">
-            {isVerified && <GoVerified />}
+}) => {
+  const maxWordsInDescription = 100;
+  const truncatedDescription = truncateText(description, maxWordsInDescription);
+
+  return (
+    <Box maxWidth="1000px" margin="auto" p="4">
+      {photos && <ImageScrollbar data={photos} />}
+      <Box w="full" p="6">
+        <Flex paddingTop="2" alignItems="center" justifyContent="space-between">
+          <Flex alignItems="left">
+            <Box paddingRight={3} color="black.400">
+              {isVerified && <GoVerified />}
+            </Box>
+            <Text fontWeight="bold" fontSize="lg">
+              AED{millify(price)}
+              {rentFrequency && `/${rentFrequency}`}
+            </Text>
+          </Flex>
+          <Box>
+            <Avatar size="sm" src={agency?.logo?.url} />
           </Box>
-          <Text fontWeight="bold" fontSize="lg">
-            AED{millify(price)}
-            {rentFrequency && `/${rentFrequency}`}
-          </Text>
-        </Flex>
-        <Box>
-          <Avatar size="sm" src={agency?.logo?.url} />
-        </Box>
-      </Flex>
-      <Flex
-        alignItems="center"
-        p="1"
-        justifyContent="space-between"
-        w="250px"
-        color="grey.400"
-      >
-        {rooms} <FaBed /> | {baths} <FaBath /> | {millify(area)} sqft
-        <BsGridFill />
-      </Flex>
-      <Box marginTop="2" fontSize="2" marginBottom="2" fontWeight="bold"></Box>
-      <Text fontsize="lg">{title}</Text>
-      <Text lineHeight="2" color="gray.600">
-        {description}
-      </Text>
-      <Flex
-        flexWrap="wrap"
-        textTransform="uppercase"
-        justifyContent="space-between"
-      >
-        <Flex
-          justifyContent="space-between"
-          w="400px"
-          borderBottom="1px"
-          borderColor="gray.100"
-          p="3"
-        >
-          <Text>Type</Text>
-          <Text fontWeight="bold">{type}</Text>
         </Flex>
         <Flex
+          alignItems="center"
+          p="1"
           justifyContent="space-between"
-          w="400px"
-          borderBottom="1px"
-          borderColor="gray.100"
-          p="3"
+          w="250px"
+          color="grey.400"
         >
-          <Text>Purpose</Text>
-          <Text fontWeight="bold">{purpose}</Text>
+          {rooms} <FaBed /> | {baths} <FaBath /> | {millify(area)} sqft
+          <BsGridFill />
         </Flex>
-        {furnishingStatus && (
+        <Box
+          marginTop="2"
+          fontSize="2"
+          marginBottom="2"
+          fontWeight="bold"
+        ></Box>
+        <Text fontsize="lg">{title}</Text>
+        <Text lineHeight="2" color="gray.600">
+          {description}
+        </Text>
+        <Flex
+          flexWrap="wrap"
+          textTransform="uppercase"
+          justifyContent="space-between"
+        >
           <Flex
             justifyContent="space-between"
             w="400px"
@@ -89,41 +83,62 @@ const PropertyDetails = ({
             borderColor="gray.100"
             p="3"
           >
-            <Text>furnishing Status</Text>
-            <Text fontWeight="bold">{furnishingStatus}</Text>
+            <Text>Type</Text>
+            <Text fontWeight="bold">{type}</Text>
           </Flex>
-        )}
-      </Flex>
-      <Box>
-        {amenities.length && (
-          <>
-            <Text fontSize="2xl" fontWeight="black" marginTop="5">
-              Amenities
-            </Text>
-            <Flex flexWrap="wrap">
-              {amenities.map((item) =>
-                item.amenities.map((amenity) => (
-                  <Text
-                    fontWeight="bold"
-                    color="blue.500"
-                    fontSize="l"
-                    p="2"
-                    m="1"
-                    borderRadius="5"
-                    key={amenity.text}
-                  >
-                    {amenity.text}
-                  </Text>
-                ))
-              )}
+          <Flex
+            justifyContent="space-between"
+            w="400px"
+            borderBottom="1px"
+            borderColor="gray.100"
+            p="3"
+          >
+            <Text>Purpose</Text>
+            <Text fontWeight="bold">{purpose}</Text>
+          </Flex>
+          {furnishingStatus && (
+            <Flex
+              justifyContent="space-between"
+              w="400px"
+              borderBottom="1px"
+              borderColor="gray.100"
+              p="3"
+            >
+              <Text>furnishing Status</Text>
+              <Text fontWeight="bold">{furnishingStatus}</Text>
             </Flex>
-          </>
-        )}
+          )}
+        </Flex>
+        <Box>
+          {amenities.length && (
+            <>
+              <Text fontSize="2xl" fontWeight="black" marginTop="5">
+                Amenities
+              </Text>
+              <Flex flexWrap="wrap">
+                {amenities.map((item) =>
+                  item.amenities.map((amenity) => (
+                    <Text
+                      fontWeight="bold"
+                      color="blue.500"
+                      fontSize="l"
+                      p="2"
+                      m="1"
+                      borderRadius="5"
+                      key={amenity.text}
+                    >
+                      {amenity.text}
+                    </Text>
+                  ))
+                )}
+              </Flex>
+            </>
+          )}
+        </Box>
       </Box>
     </Box>
-  </Box>
-);
-
+  );
+};
 export default PropertyDetails;
 
 export async function getServerSideProps({ params: { id } }) {
